@@ -49,13 +49,17 @@ void Graphics_SwapBuffer(GraphicsObj_t *Obj)
  * @param Obj 		Pointer to graphics object
  * @return void 	Return void
  */
-void Graphics_ClearBuffer(GraphicsObj_t *Obj)
+void Graphics_ClearBuffer(GraphicsObj_t *Obj, GraphicsColor_t Color)
 {
 	uint8_t i;
 	uint8_t *ptr;
 
-	// Reset buffer to 0xFF
-	memset(Obj->pBuf, 0xFF, sizeof(uint8_t) * s_GRAPHICS__BUFFER_SIZE);
+	// Clear buffer depending on the color
+	if(Color == s_GRAPHICS_COLOR__WHITE) {
+		memset(Obj->pBuf, 0xFF, sizeof(uint8_t) * s_GRAPHICS__BUFFER_SIZE);
+	} else {
+		memset(Obj->pBuf, 0x00, sizeof(uint8_t) * s_GRAPHICS__BUFFER_SIZE);
+	}
 
 	ptr = Obj->pBuf;
 	// Set write CMD on the first byte
@@ -361,14 +365,48 @@ void Graphics_FillCircleHelper(	GraphicsObj_t *Obj,
 }
 
 
-//drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
-//    fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
-//    fillScreen(uint16_t color),
-//    invertDisplay(boolean i);
+/**
+ * Draw rectangle in the buffer
+ * Adapted from Adafruit_GFX library
+ * @param Obj 			Pointer to graphics object
+ * @param X 			Start X position
+ * @param Y 			Start Y position
+ * @param W 			Width of rectangle
+ * @param H 			Height of rectangle
+ * @param Color			Color of the pixel
+ * @return void 		Return void
+ */
+void Graphics_DrawRect(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t W, uint8_t H, GraphicsColor_t Color)
+{
+	Graphics_DrawHLine(Obj, X, X+W, Y, Color);
+	Graphics_DrawHLine(Obj, X, X+W, Y+H-1, Color);
+	Graphics_DrawVLine(Obj, X, Y, Y+H, Color);
+	Graphics_DrawVLine(Obj, X+W-1, Y, Y+H, Color);
+}
+
+/**
+ * Fill rectangle in the buffer
+ * Adapted from Adafruit_GFX library
+ * @param Obj 			Pointer to graphics object
+ * @param X 			Start X position
+ * @param Y 			Start Y position
+ * @param W 			Width of rectangle
+ * @param H 			Height of rectangle
+ * @param Color			Color of the pixel
+ * @return void 		Return void
+ */
+void Graphics_FillRect(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t W, uint8_t H, GraphicsColor_t Color)
+{
+	uint8_t i;
+
+	for (i = X; i < X+W; i++) {
+		Graphics_DrawVLine(Obj, i, Y, Y+H, Color);
+	}
+}
+
+
 
 //    drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername,uint16_t color),
-
-
 //    drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,int16_t x2, int16_t y2, uint16_t color),
 //    fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,int16_t x2, int16_t y2, uint16_t color),
 //    drawRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h,int16_t radius, uint16_t color),

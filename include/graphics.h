@@ -62,7 +62,7 @@ typedef struct s_GRAPHICS_OBJECT_STRUCT
 
 /* -- Function Prototypes -- */
 void Graphics_Init(GraphicsObj_t *Obj);
-void Graphics_ClearBuffer(GraphicsObj_t *Obj);
+void Graphics_ClearBuffer(GraphicsObj_t *Obj, GraphicsColor_t Color)
 void Graphics_DrawPixel(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, GraphicsColor_t Color);
 void Graphics_DrawHLine(GraphicsObj_t *Obj, uint8_t X1, uint8_t X2, uint8_t Y, GraphicsColor_t Color);
 void Graphics_DrawVLine(GraphicsObj_t *Obj, uint8_t X, uint8_t Y1, uint8_t Y2, GraphicsColor_t Color);
@@ -70,6 +70,8 @@ void Graphics_DrawLine(GraphicsObj_t *Obj, uint8_t X1, uint8_t Y1, uint8_t X2, u
 void Graphics_DrawCircle(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t R, GraphicsColor_t Color);
 void Graphics_FillCircle(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t R, GraphicsColor_t Color);
 void Graphics_FillCircleHelper(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t R, uint8_t CornerName, int16_t Delta, GraphicsColor_t Color);
+void Graphics_DrawRect(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t W, uint8_t H, GraphicsColor_t Color);
+void Graphics_FillRect(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t W, uint8_t H, GraphicsColor_t Color);
 
 
 #endif /* __GRAPHICS_H */
