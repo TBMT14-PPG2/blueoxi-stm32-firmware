@@ -134,6 +134,7 @@ void SharpLcd_Clear(void)
 
 /**
  * Update Sharp LCD from buffer
+ * TODO: This should be removed in future
  * @param void No arguments
  * @return void No return
  */
@@ -175,6 +176,11 @@ void SharpLcd_UpdateFrame(uint8_t Data)
 	s_SHARPLCD__SCS_RESET();
 }
 
+/**
+ * Power On LCD
+ * @param void No arguments
+ * @return void No return
+ */
 void SharpLcd_PowerOn(void)
 {
 	// Set display power state to ON
@@ -185,6 +191,11 @@ void SharpLcd_PowerOn(void)
 	HAL_Delay(1);
 }
 
+/**
+ * Power Off LCD
+ * @param void No arguments
+ * @return void No return
+ */
 void SharpLcd_PowerOff(void)
 {
 	// Set display power state to OFF
@@ -194,6 +205,12 @@ void SharpLcd_PowerOff(void)
 	s_SHARPLCD__DISP_RESET();
 }
 
+/**
+ * Function to handle VCOM switching
+ * Must be executed with 1kHz rate. Produces 10Hz switching.
+ * @param void No arguments
+ * @return void No return
+ */
 void SharpLcd_VcomHandle(void)
 {
 	static uint32_t counter = 0;
@@ -213,9 +230,11 @@ void SharpLcd_VcomHandle(void)
 
 }
 
-
-
-
+/**
+ * Display graphics buffer on Sharp LCD
+ * @param Buffer Pointer to buffer to be displayed
+ * @return void No return
+ */
 void SharpLcd_DisplayBuffer(uint8_t *Buffer)
 {
 	// Chip select

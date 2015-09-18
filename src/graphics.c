@@ -359,3 +359,28 @@ void Graphics_FillCircleHelper(	GraphicsObj_t *Obj,
 		}
 	}
 }
+
+
+//drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
+//    fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
+//    fillScreen(uint16_t color),
+//    invertDisplay(boolean i);
+
+//    drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername,uint16_t color),
+
+
+//    drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,int16_t x2, int16_t y2, uint16_t color),
+//    fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,int16_t x2, int16_t y2, uint16_t color),
+//    drawRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h,int16_t radius, uint16_t color),
+//    fillRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h,int16_t radius, uint16_t color),
+//    drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap,int16_t w, int16_t h, uint16_t color),
+//    drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap,int16_t w, int16_t h, uint16_t color, uint16_t bg),
+//    drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color),
+//    drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,uint16_t bg, uint8_t size),
+//    setCursor(int16_t x, int16_t y),
+//    setTextColor(uint16_t c),
+//    setTextColor(uint16_t c, uint16_t bg),
+//    setTextSize(uint8_t s),
+//    setTextWrap(boolean w),
+//    setRotation(uint8_t r),
+
