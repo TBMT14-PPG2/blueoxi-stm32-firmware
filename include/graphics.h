@@ -87,6 +87,6 @@ void Graphics_DrawChar(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t Char, G
 void Graphics_DrawString(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t *String, GraphicsColor_t Color);
 
 void Graphics_DrawCharNew(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t Char, GraphicsColor_t Color);
-void Graphics_DrawText(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t *String, FontInfo_t Font, GraphicsTextAlignment_t Alignment);
+void Graphics_DrawText(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t *String, FontInfo_t Font, GraphicsTextAlignment_t Alignment, GraphicsColor_t Color);
 
 #endif /* __GRAPHICS_H */

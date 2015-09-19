@@ -450,6 +450,17 @@ void Graphics_FillRect(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t W, uint
 	}
 }
 
+/**
+ * Draw bitmap in the buffer
+ * @param Obj 			Pointer to graphics object
+ * @param X 			Start X position
+ * @param Y 			Start Y position
+ * @param Bitmap 		Pointer to bitmap
+ * @param W 			Width of bitmap
+ * @param H 			Height of bitmap
+ * @param Color			Color of the pixels
+ * @return void 		Return void
+ */
 void Graphics_DrawBitmap(	GraphicsObj_t *Obj,
 							uint8_t X,
 							uint8_t Y,
@@ -473,13 +484,16 @@ void Graphics_DrawBitmap(	GraphicsObj_t *Obj,
 	}
 }
 
-
-
-
-
-
-
-
+/**
+ * Draw a char in the buffer
+ * Adapted from Adafruit_GFX library
+ * @param Obj 			Pointer to graphics object
+ * @param X 			Start X position
+ * @param Y 			Start Y position
+ * @param Char 			Char to draw
+ * @param Color			Color of the pixel
+ * @return void 		Return void
+ */
 void Graphics_DrawChar(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t Char, GraphicsColor_t Color)
 {
 	uint8_t i, j;
@@ -505,6 +519,15 @@ void Graphics_DrawChar(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t Char, G
 	}
 }
 
+/**
+ * Draw a text string in the buffer
+ * @param Obj 			Pointer to graphics object
+ * @param X 			Start X position
+ * @param Y 			Start Y position
+ * @param String 		Pointer to string to be drawn
+ * @param Color			Color of the pixel
+ * @return void 		Return void
+ */
 void Graphics_DrawString(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t *String, GraphicsColor_t Color)
 {
 	uint8_t x, y;
@@ -521,11 +544,27 @@ void Graphics_DrawString(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t *Stri
 	}
 }
 
-
-
-
-void Graphics_DrawText(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t *String, FontInfo_t Font, GraphicsTextAlignment_t Alignment)
+/**
+ * Draw a text string in the buffer (Custom fonts)
+ * @param Obj 			Pointer to graphics object
+ * @param X 			Start X position
+ * @param Y 			Start Y position
+ * @param String 		Pointer to string to be drawn
+ * @param Font 			Font structure
+ * @param Alignment 	Text alignment
+ * @param Color			Color of the pixels
+ * @return void 		Return void
+ */
+void Graphics_DrawText(	GraphicsObj_t *Obj,
+						uint8_t X,
+						uint8_t Y,
+						uint8_t *String,
+						FontInfo_t Font,
+						GraphicsTextAlignment_t Alignment,
+						GraphicsColor_t Color)
 {
+	// TODO: Clean code!!!
+
   	// - Variables -
   	uint8_t i, j;
   	uint8_t *ptr, *pStr;
@@ -612,8 +651,11 @@ void Graphics_DrawText(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t *String
 					char_bits_left -= (8 - initBitPos);
 					// Save
 					ptr = Obj->pBuf + 2 + ((Y + j) * s_GRAPHICS__WIDTH_EXT) + initBytePos + (bytePos++);
-					//*(ptr) |= char_shifted;
-					*(ptr) &= ~char_shifted;
+					if(Color == s_GRAPHICS_COLOR__BLACK) {
+						*(ptr) &= ~char_shifted;
+					} else {
+						*(ptr) |= char_shifted;
+					}
 
 					if(char_bits_left <= 0)
 					{
@@ -628,10 +670,11 @@ void Graphics_DrawText(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t *String
 					char_bits_left -= (initBitPos);
 					// Save
 					ptr = Obj->pBuf + 2 + ((Y + j) * s_GRAPHICS__WIDTH_EXT) + initBytePos + (bytePos);
-					//*(ptr) |= char_shifted;
-					*(ptr) &= ~char_shifted;
-
-
+					if(Color == s_GRAPHICS_COLOR__BLACK) {
+						*(ptr) &= ~char_shifted;
+					} else {
+						*(ptr) |= char_shifted;
+					}
 
 				}
 				else {
@@ -641,8 +684,11 @@ void Graphics_DrawText(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t *String
 					char_bits_left -= 8;
 					// Save
 					ptr = Obj->pBuf + 2 + ((Y + j) * s_GRAPHICS__WIDTH_EXT) + initBytePos + (bytePos++);
-					//*(ptr) |= char_shifted;
-					*(ptr) &= ~char_shifted;
+					if(Color == s_GRAPHICS_COLOR__BLACK) {
+						*(ptr) &= ~char_shifted;
+					} else {
+						*(ptr) |= char_shifted;
+					}
 				}
 
 				char_pos++;
@@ -667,11 +713,7 @@ void Graphics_DrawText(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t *String
 //    fillRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h,int16_t radius, uint16_t color),
 //    drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color),
 
-//    drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,uint16_t bg, uint8_t size),
 //    setCursor(int16_t x, int16_t y),
-//    setTextColor(uint16_t c),
-//    setTextColor(uint16_t c, uint16_t bg),
-//    setTextSize(uint8_t s),
 //    setTextWrap(boolean w),
 //    setRotation(uint8_t r),
 
