@@ -523,30 +523,8 @@ void Graphics_DrawString(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t *Stri
 
 
 
-void Graphics_DrawCharNew(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t Char, GraphicsColor_t Color)
-{
-//	uint8_t i, j;
-//	uint8_t line = 0;
-//	uint8_t bitCount=0;
-//	uint16_t fontIndex = sFUIDisplay_20ptDescriptors[Char-'!'].offset; //((fontDesc + c)->offset) + 2;
-//
-//	for (i = 0; i < 27; i++) {	// i<fontHeight
-//		for (j = 0; j < sFUIDisplay_20ptDescriptors[Char-'!'].width; j++) {			//j<fontWidth
-//			if (bitCount++%8 == 0) {
-//				line = *(sFUIDisplay_20ptBitmaps+fontIndex++);
-//			}
-//			if (line & 0x80) {
-//				Graphics_DrawPixel(Obj, X+i, Y+j, Color);
-//			}
-//			line <<= 1;
-//		}
-//		bitCount = 0;
-//	}
-}
 
-
-
-void Graphics_DrawStringNew(GraphicsObj_t *Obj, uint8_t *text, FONT_INFO font, uint8_t font_height, uint8_t x, uint8_t y)
+void Graphics_DrawText(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t *String, FontInfo_t Font, GraphicsTextAlignment_t Alignment)
 {
   	// - Variables -
   	uint8_t i, j;
@@ -557,32 +535,45 @@ void Graphics_DrawStringNew(GraphicsObj_t *Obj, uint8_t *text, FONT_INFO font, u
 	uint8_t char_part, char_shifted;
 	int8_t char_bits_left;
 	// Position
-	uint16_t pos_init_bit, pos_init_byte, pos_byte, x_new;
+	uint16_t initBitPos, initBytePos, bytePos, xNew;
 
-
-	//ptr = Obj->pBuf;
-	pStr = text;
-
-
-
-	// Calculate text width for alignment
+	// Alignment
 	uint8_t textWidth = 0;
+
+
+	// Calculate offset for alignment
+	// Set pointer to string
+	pStr = String;
+	// Loop through chars
 	while(*pStr)
 	{
-		textWidth += font.charInfo[*pStr - font.startChar].widthBits;
+		textWidth += Font.charInfo[*pStr - Font.startChar].widthBits;
 		textWidth += 2; // Add spacing
 
 		pStr++;
 	}
-	x = (s_GRAPHICS__LCD_WIDTH - textWidth) / 2;
+	switch(Alignment)
+	{
+		case s_GRAPHICS_TEXT_ALIGN__LEFT :
+			xNew = X;
+			break;
+		case s_GRAPHICS_TEXT_ALIGN__CENTER :
+			xNew = (s_GRAPHICS__LCD_WIDTH - textWidth) / 2;
+			break;
+		case s_GRAPHICS_TEXT_ALIGN__RIGHT :
+			xNew = s_GRAPHICS__LCD_WIDTH - textWidth - X;
+			break;
+		default :
+			xNew = X;
+			break;
+	}
 
 	// Reset text pointer
-	pStr = text;
+	pStr = String;
 
 	// Calculate start position
-	x_new = x;
-	pos_init_bit = x % 8;
-	pos_init_byte =  (x - pos_init_bit) / 8;
+	initBitPos = xNew % 8;
+	initBytePos =  (xNew - initBitPos) / 8;
 
 	// For each char
 	while(*pStr)
@@ -590,41 +581,41 @@ void Graphics_DrawStringNew(GraphicsObj_t *Obj, uint8_t *text, FONT_INFO font, u
 	  	// Get char info
 	  	if(*pStr == ' ')
 		{
-		  	char_width = font.charInfo['*' - font.startChar].widthBits;
-		  	x_new += (char_width + 2);
-			pos_init_bit = x_new % 8;
-			pos_init_byte =  (x_new - pos_init_bit) / 8;
+		  	char_width = Font.charInfo['*' - Font.startChar].widthBits;
+		  	xNew += (char_width + 2);
+		  	initBitPos = xNew % 8;
+		  	initBytePos =  (xNew - initBitPos) / 8;
 			continue;
 		}
 
-		char_offset = font.charInfo[*pStr - font.startChar].offset;
-		char_width = font.charInfo[*pStr - font.startChar].widthBits;
+		char_offset = Font.charInfo[*pStr - Font.startChar].offset;
+		char_width = Font.charInfo[*pStr - Font.startChar].widthBits;
 		char_pos = 0;
 
 		// For each row
-		for(j = 0; j < font_height; j++)
+		for(j = 0; j < Font.height; j++)
 		{
 		  	char_bits_left = char_width;
-			pos_byte = 0;
+		  	bytePos = 0;
 
 		  	while(char_bits_left > 0)
 			{
 
-				char_part = reverse_byte(font.data[char_offset + char_pos]);
+				char_part = Font.data[char_offset + char_pos];
 
-				if(pos_init_bit != 0) {
+				if(initBitPos != 0) {
 
 					// - Second char part -
 					//char_shifted = char_part << (8 - (pos_init_bit - 1));
-					char_shifted = char_part << (pos_init_bit);
+					char_shifted = char_part << (initBitPos);
 					// Recalculate chars left
-					char_bits_left -= (pos_init_bit - 1);
+					char_bits_left -= (8 - initBitPos);
 					// Save
-					ptr = Obj->pBuf + 2 + ((y + j) * s_GRAPHICS__WIDTH_EXT) + pos_init_byte + (pos_byte++);
+					ptr = Obj->pBuf + 2 + ((Y + j) * s_GRAPHICS__WIDTH_EXT) + initBytePos + (bytePos++);
 					//*(ptr) |= char_shifted;
 					*(ptr) &= ~char_shifted;
 
-					if(!(char_bits_left > 0))
+					if(char_bits_left <= 0)
 					{
 						char_pos++;
 						break;
@@ -632,11 +623,11 @@ void Graphics_DrawStringNew(GraphicsObj_t *Obj, uint8_t *text, FONT_INFO font, u
 
 					// - First char part -
 					//char_shifted = char_part >> (pos_init_bit - 1);
-					char_shifted = char_part >> (8 - (pos_init_bit));
+					char_shifted = char_part >> (8 - (initBitPos));
 					// Recalculate chars left
-					char_bits_left -= (8 - (pos_init_bit - 1));
+					char_bits_left -= (initBitPos);
 					// Save
-					ptr = Obj->pBuf + 2 + ((y + j) * s_GRAPHICS__WIDTH_EXT) + pos_init_byte + (pos_byte);
+					ptr = Obj->pBuf + 2 + ((Y + j) * s_GRAPHICS__WIDTH_EXT) + initBytePos + (bytePos);
 					//*(ptr) |= char_shifted;
 					*(ptr) &= ~char_shifted;
 
@@ -649,7 +640,7 @@ void Graphics_DrawStringNew(GraphicsObj_t *Obj, uint8_t *text, FONT_INFO font, u
 					// Recalculate chars left
 					char_bits_left -= 8;
 					// Save
-					ptr = Obj->pBuf + 2 + ((y + j) * s_GRAPHICS__WIDTH_EXT) + pos_init_byte + (pos_byte++);
+					ptr = Obj->pBuf + 2 + ((Y + j) * s_GRAPHICS__WIDTH_EXT) + initBytePos + (bytePos++);
 					//*(ptr) |= char_shifted;
 					*(ptr) &= ~char_shifted;
 				}
@@ -658,9 +649,9 @@ void Graphics_DrawStringNew(GraphicsObj_t *Obj, uint8_t *text, FONT_INFO font, u
 			}
 		}
 
-		x_new += (char_width + 2);
-		pos_init_bit = x_new % 8;
-		pos_init_byte =  (x_new - pos_init_bit) / 8;
+		xNew += (char_width + 2);
+		initBitPos = xNew % 8;
+		initBytePos =  (xNew - initBitPos) / 8;
 		pStr++;
 	}
 }

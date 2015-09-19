@@ -42,6 +42,15 @@ typedef enum s_GRAPHICS_COLOR_ENUM {
 	s_GRAPHICS_COLOR__WHITE
 } GraphicsColor_t;
 
+/**
+ * @brief Graphics Color
+ */
+typedef enum s_GRAPHICS_TEXT_ALIGNMENT_ENUM {
+	s_GRAPHICS_TEXT_ALIGN__LEFT = 0,
+	s_GRAPHICS_TEXT_ALIGN__CENTER,
+	s_GRAPHICS_TEXT_ALIGN__RIGHT
+} GraphicsTextAlignment_t;
+
 /* -- Typedefs -- */
 
 /**
@@ -78,6 +87,6 @@ void Graphics_DrawChar(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t Char, G
 void Graphics_DrawString(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t *String, GraphicsColor_t Color);
 
 void Graphics_DrawCharNew(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t Char, GraphicsColor_t Color);
-void Graphics_DrawStringNew(GraphicsObj_t *Obj, uint8_t *text, FONT_INFO font, uint8_t font_height, uint8_t x, uint8_t y);
+void Graphics_DrawText(GraphicsObj_t *Obj, uint8_t X, uint8_t Y, uint8_t *String, FontInfo_t Font, GraphicsTextAlignment_t Alignment);
 
 #endif /* __GRAPHICS_H */
